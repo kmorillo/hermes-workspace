@@ -53,8 +53,14 @@ export function resolveSwarmModelLabel(
   if (/^gpt[- ]?5\.4$|^codex\s*\(?gpt[- ]?5\.4\)?$/.test(normalized)) {
     return { provider: 'openai-codex', default: 'gpt-5.4' }
   }
-  if (/^gpt[- ]?5\.3[- ]codex(?:[- ]?spark)?$/.test(normalized)) {
+  if (/^gpt[- ]?5\.4[- ]mini$|^codex\s*\(?gpt[- ]?5\.4[- ]mini\)?$/.test(normalized)) {
+    return { provider: 'openai-codex', default: 'gpt-5.4-mini' }
+  }
+  if (/^gpt[- ]?5\.3[- ]codex[- ]spark$/.test(normalized)) {
     return { provider: 'openai-codex', default: 'gpt-5.3-codex-spark' }
+  }
+  if (/^gpt[- ]?5\.3[- ]codex$/.test(normalized)) {
+    return { provider: 'openai-codex', default: 'gpt-5.3-codex' }
   }
 
   // MiniMax

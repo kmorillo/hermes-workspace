@@ -496,3 +496,330 @@ workers:
   mcpServers:
   - gbrain
   wrapper: inbox:triage
+
+# ── Development Crew ──────────────────────────────────────────────────────────
+
+- id: grillz
+  name: Grillz
+  role: Intent Discovery & Planning
+  specialty: requirements extraction, success criteria, structured planning, context handoff
+  model: gpt-5.5
+  mission: Grill the user until intent, requirements, constraints, and definition of done are crystal clear. Produce a structured plan and hand context to the right agents.
+  profile: grillz
+  modes:
+  - plan
+  tools:
+  - gbrain
+  - file
+  - session_search
+  - skills
+  - todo
+  - clarify
+  - web
+  - delegation
+  - kanban
+  - memory
+  skills:
+  - grillz-core
+  - gbrain
+  - gstack-for-hermes
+  - writing-plans
+  capabilities:
+  - intent-discovery
+  - requirements-extraction
+  - planning
+  - context-handoff
+  - success-criteria
+  preferredTaskTypes:
+  - planning
+  - requirements
+  - discovery
+  - handoff
+  greenlightRequiredFor:
+  - destructive
+  - external-send
+  - credential-change
+  maxConcurrentTasks: 1
+  acceptsBroadcast: true
+  plugins: []
+  pluginToolsets: []
+  mcpServers:
+  - gbrain
+  wrapper: grillz:plan
+
+- id: coder
+  name: Coder
+  role: General Development Specialist
+  specialty: Python, TypeScript, React, Hermes internals, Docker, hooks, cron scripts
+  model: gpt-5.3-codex
+  mission: Ship minimal, tested implementations across Python and web tech. Read before writing. Smallest diff that works.
+  profile: coder
+  modes:
+  - task
+  tools:
+  - terminal
+  - file
+  - browser
+  - web
+  - gbrain
+  - session_search
+  - skills
+  - todo
+  skills:
+  - coder-core
+  - gstack-for-hermes
+  - test-driven-development
+  - systematic-debugging
+  - requesting-code-review
+  capabilities:
+  - python
+  - typescript
+  - react
+  - docker
+  - hermes-hooks
+  - hermes-cron
+  - hermes-plugins
+  preferredTaskTypes:
+  - implementation
+  - bug-fix
+  - scripting
+  - hook
+  - cron-script
+  greenlightRequiredFor:
+  - merge
+  - destructive
+  - credential-change
+  maxConcurrentTasks: 1
+  acceptsBroadcast: false
+  plugins: []
+  pluginToolsets: []
+  mcpServers:
+  - gbrain
+  wrapper: coder:task
+
+- id: big-d
+  name: Big D
+  role: Database & Analytics Expert
+  specialty: Neo4J, Postgres, SQLite, mem0, pgvector, query optimization, schema design
+  model: gpt-5.5
+  mission: Design data schemas that scale, optimize queries that drag, and diagnose silent data-layer failures across all database systems in the stack.
+  profile: big-d
+  modes:
+  - query
+  tools:
+  - terminal
+  - file
+  - gbrain
+  - session_search
+  - skills
+  - web
+  skills:
+  - big-d-core
+  - gbrain
+  - gstack-for-hermes
+  - systematic-debugging
+  capabilities:
+  - neo4j
+  - postgres
+  - sqlite
+  - mem0
+  - pgvector
+  - query-optimization
+  - schema-design
+  - analytics
+  preferredTaskTypes:
+  - database
+  - schema
+  - query
+  - migration
+  - analytics
+  - data-modeling
+  greenlightRequiredFor:
+  - migration
+  - destructive
+  - schema-drop
+  maxConcurrentTasks: 1
+  acceptsBroadcast: false
+  plugins: []
+  pluginToolsets: []
+  mcpServers:
+  - gbrain
+  wrapper: bigD:query
+
+- id: gatekeeper
+  name: Gatekeeper
+  role: QA & Validation Enforcer
+  specialty: test coverage, edge cases, regression detection, definition-of-done verification
+  model: gpt-5.5-pro
+  mission: Nothing ships without verified evidence it works. Test, challenge, surface failures, and greenlight or block with explicit reasoning.
+  profile: gatekeeper
+  modes:
+  - check
+  tools:
+  - terminal
+  - file
+  - browser
+  - web
+  - gbrain
+  - session_search
+  - skills
+  skills:
+  - gatekeeper-core
+  - systematic-debugging
+  - requesting-code-review
+  - gstack-for-hermes
+  - test-driven-development
+  capabilities:
+  - qa
+  - validation
+  - regression-detection
+  - edge-case-testing
+  - greenlight-gate
+  preferredTaskTypes:
+  - qa
+  - validation
+  - review
+  - testing
+  - verification
+  greenlightRequiredFor:
+  - merge
+  - publish
+  - destructive
+  maxConcurrentTasks: 1
+  acceptsBroadcast: true
+  plugins: []
+  pluginToolsets: []
+  mcpServers:
+  - gbrain
+  wrapper: gatekeeper:check
+
+- id: otto
+  name: Otto
+  role: Output Quality & Voice Humanizer
+  specialty: link validation, content trimming, voice matching, fitness-for-purpose review
+  model: gpt-5.5
+  mission: Polish output until every link works, every word earns its place, and the result sounds like the user wrote it.
+  profile: otto
+  modes:
+  - review
+  tools:
+  - file
+  - web
+  - browser
+  - gbrain
+  - session_search
+  - skills
+  - memory
+  skills:
+  - otto-core
+  - gbrain
+  - gstack-for-hermes
+  capabilities:
+  - link-validation
+  - content-editing
+  - voice-matching
+  - output-fitness
+  - humanization
+  preferredTaskTypes:
+  - output-review
+  - editing
+  - voice-check
+  - link-audit
+  greenlightRequiredFor:
+  - publish
+  - external-send
+  maxConcurrentTasks: 1
+  acceptsBroadcast: false
+  plugins: []
+  pluginToolsets: []
+  mcpServers:
+  - gbrain
+  wrapper: otto:review
+
+- id: slacker
+  name: Slacker
+  role: Slack Output Router
+  specialty: Slack formatting, intelligent channel routing, Block Kit, channel awareness
+  model: gpt-5.4
+  mission: Deliver output to the right Slack channel in proper Slack format. Stay aware of the channel landscape and route intelligently.
+  profile: slacker
+  modes:
+  - send
+  tools:
+  - file
+  - gbrain
+  - session_search
+  - skills
+  - web
+  - messaging
+  skills:
+  - slacker-core
+  - gbrain
+  capabilities:
+  - slack-formatting
+  - channel-routing
+  - block-kit
+  - channel-discovery
+  preferredTaskTypes:
+  - slack-delivery
+  - notification
+  - report-send
+  - alert-routing
+  greenlightRequiredFor:
+  - external-send
+  - credential-change
+  maxConcurrentTasks: 3
+  acceptsBroadcast: true
+  plugins: []
+  pluginToolsets: []
+  mcpServers:
+  - gbrain
+  wrapper: slacker:send
+
+- id: joben
+  name: Joben
+  role: Hermes Job Lifecycle Expert
+  specialty: cron jobs, job health, script resilience, automation patterns, job reuse
+  model: gpt-5.5
+  mission: Own the Hermes job system end-to-end — create, maintain, audit, diagnose, and improve scheduled jobs. Grill before building. Protect production.
+  profile: joben
+  modes:
+  - manage
+  tools:
+  - terminal
+  - cronjob
+  - file
+  - gbrain
+  - session_search
+  - skills
+  - web
+  - clarify
+  skills:
+  - joben-core
+  - gbrain
+  - hermes-agent
+  - systematic-debugging
+  - gstack-for-hermes
+  capabilities:
+  - cron-management
+  - job-health
+  - script-resilience
+  - automation
+  - job-audit
+  preferredTaskTypes:
+  - job-create
+  - job-maintain
+  - job-diagnose
+  - job-optimize
+  - automation
+  greenlightRequiredFor:
+  - job-delete
+  - destructive
+  - script-purge
+  maxConcurrentTasks: 1
+  acceptsBroadcast: false
+  plugins: []
+  pluginToolsets: []
+  mcpServers:
+  - gbrain
+  wrapper: joben:manage

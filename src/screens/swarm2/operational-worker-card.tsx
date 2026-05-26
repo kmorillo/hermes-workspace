@@ -249,6 +249,7 @@ export function OperationalWorkerCard({
   const chatAnchorRef = useRef<HTMLDivElement | null>(null)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [settings, setSettings] = useState<WorkerCardSettings>({})
+  const [unblockState, setUnblockState] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
   const [draftName, setDraftName] = useState('')
   const [draftRole, setDraftRole] = useState('')
   const [draftModel, setDraftModel] = useState('')
@@ -320,6 +321,26 @@ export function OperationalWorkerCard({
     }
   }, [focusPanels, focusPanel])
   const activeFocusPanel = focusPanels.find((panel) => panel.key === focusPanel) ?? focusPanels[0]
+
+  const isBlocked = checkpointStatus === 'blocked' || runtimeState === 'blocked'
+
+  async function handleUnblock(event: React.MouseEvent) {
+    event.stopPropagation()
+    setUnblockState('loading')
+    try {
+      const res = await fetch('/api/swarm-runtime/reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ workerIds: [member.id], reason: 'Unblocked from worker card' }),
+      })
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      setUnblockState('done')
+      setTimeout(() => setUnblockState('idle'), 2000)
+    } catch {
+      setUnblockState('error')
+      setTimeout(() => setUnblockState('idle'), 3000)
+    }
+  }
 
   function cycleFocusPanel(direction: -1 | 1) {
     const currentIndex = focusPanels.findIndex((panel) => panel.key === focusPanel)
@@ -583,6 +604,23 @@ export function OperationalWorkerCard({
           <HugeiconsIcon icon={CheckListIcon} size={11} />
           Route to agent
         </button>
+        {isBlocked ? (
+          <button
+            type="button"
+            disabled={unblockState === 'loading'}
+            onClick={handleUnblock}
+            className={cn(
+              'inline-flex items-center gap-1 rounded-full border px-2.5 py-1 transition-colors',
+              unblockState === 'done'
+                ? 'border-emerald-400/40 bg-emerald-500/10 text-emerald-300'
+                : unblockState === 'error'
+                  ? 'border-red-400/40 bg-red-500/10 text-red-300'
+                  : 'border-red-400/40 bg-red-500/10 text-red-300 hover:bg-red-500/20',
+            )}
+          >
+            {unblockState === 'loading' ? '…' : unblockState === 'done' ? '✓ Cleared' : unblockState === 'error' ? 'Failed' : 'Unblock'}
+          </button>
+        ) : null}
         <button
           type="button"
           onClick={onOpenTui}

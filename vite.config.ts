@@ -428,6 +428,7 @@ const config = defineConfig(({ mode, command }) => {
         '**/node_modules/**',
         '**/dist/**',
         '**/skills-bundle/**',
+        '**/e2e/**',
         '**/.{idea,git,cache,output,temp}/**',
       ],
       // Force vitest to run React through its own transform pipeline so ESM

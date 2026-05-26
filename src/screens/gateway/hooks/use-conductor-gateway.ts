@@ -281,6 +281,26 @@ function sessionMatchesMissionContext(
   return missionNeedles.some((needle) => text.includes(needle))
 }
 
+export function isRecentConductorSession(session: GatewaySession, cutoffMs: number): boolean {
+  const updatedAt = toIso(session.updatedAt ?? session.startedAt ?? session.createdAt)
+  if (!updatedAt) return false
+
+  const updatedMs = new Date(updatedAt).getTime()
+  if (!Number.isFinite(updatedMs) || updatedMs < cutoffMs) return false
+
+  const label = readString(session.label) ?? ''
+  if (label.startsWith('worker-') || label.startsWith('conductor-')) return true
+
+  const key = readString(session.key) ?? ''
+  const text = normalizeMatchText(getSessionSearchText(session))
+
+  if (key.includes(':subagent:') || /^cron[_:]/i.test(key)) {
+    return text.includes('mission orchestrator') || text.includes('dashboard backed conductor') || text.includes('conductor mission')
+  }
+
+  return false
+}
+
 function loadPersistedMission(): PersistedMission | null {
   try {
     const raw = globalThis.localStorage?.getItem(ACTIVE_MISSION_STORAGE_KEY)
@@ -991,18 +1011,7 @@ export function useConductorGateway() {
       const sessions = Array.isArray(payload.sessions) ? payload.sessions : []
       const cutoff = Date.now() - 24 * 60 * 60_000
       return sessions
-        .filter((session) => {
-          const label = readString(session.label) ?? ''
-          const key = readString(session.key) ?? ''
-          const updatedAt = toIso(session.updatedAt ?? session.startedAt ?? session.createdAt)
-          if (!updatedAt) return false
-          const isConductorSession =
-            label.startsWith('worker-') ||
-            label.startsWith('conductor-') ||
-            /^cron[_:]/i.test(key) ||
-            key.includes(':subagent:')
-          return isConductorSession && new Date(updatedAt).getTime() >= cutoff
-        })
+        .filter((session) => isRecentConductorSession(session, cutoff))
         .sort((a, b) => {
           const updatedA = new Date(toIso(a.updatedAt ?? a.startedAt ?? a.createdAt) ?? 0).getTime()
           const updatedB = new Date(toIso(b.updatedAt ?? b.startedAt ?? b.createdAt) ?? 0).getTime()
